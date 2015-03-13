@@ -2,7 +2,7 @@
 
 
 ## Loading and preprocessing the data
-First we will set the WD and read in the data and set all NA values to 0
+First we will set the WD and read in the data and remove all NA values
 
 ```r
 setwd("~/coursera/RR/RepData_PeerAssessment1")
@@ -10,7 +10,7 @@ data <- read.csv("activity.csv")
 data$date <- as.Date(data$date)
 check <- is.na(data$steps)
 data.NA <- data
-data.NA[check,1] <- 0
+data.NA <- data.NA[!check,]
 ```
 
 
@@ -35,7 +35,7 @@ mean(DaySum)
 ```
 
 ```
-## [1] 9354.23
+## [1] 10766.19
 ```
 
 ```r
@@ -43,7 +43,7 @@ median(DaySum)
 ```
 
 ```
-## [1] 10395
+## [1] 10765
 ```
 
 
@@ -56,7 +56,16 @@ plot(names(IntAvg), IntAvg, type ="l", xlab = "Interval", ylab = "Average Steps"
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+The interval with the highest average number of steps is:
 
+```r
+Val <- max(IntAvg)
+names(IntAvg[match(Val,IntAvg)])
+```
+
+```
+## [1] "835"
+```
 
 ## Imputing missing values
 The total number of missing values in the dataset
@@ -81,14 +90,14 @@ DaySum.comp <- tapply(data.comp$steps, data.comp$date, sum)
 hist(DaySum.comp, col = "red", xlab = "Steps Per Day")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-8-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png) 
 
 ```r
 mean(DaySum.comp)
 ```
 
 ```
-## [1] 10581.01
+## [1] 10766.19
 ```
 
 ```r
@@ -96,14 +105,15 @@ median(DaySum.comp)
 ```
 
 ```
-## [1] 10395
+## [1] 10766.19
 ```
 
 As you can see there is a significant impact on the data when estimated values are used instead of missing values:
 
-- The Mean and Median both increase
-- the number of 0 step days decreases
-- the number of steps per day increases accross the board.
+- The Mean stays the same
+- The median becomes equal to the mean
+- the number of days with the mean number of steps increases significantly
+- This all leads to the conclusion that missing data is not speratic throughout the day, but rather on a day by day basis.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
@@ -131,4 +141,4 @@ plot(names(IntAvg.day),IntAvg.day, type = "l", main = "Weekdays", xlab = "interv
 plot(names(IntAvg.end),IntAvg.end, type = "l", main = "Weekends", xlab = "interval", ylab = "number of steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-10-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-11-1.png) 

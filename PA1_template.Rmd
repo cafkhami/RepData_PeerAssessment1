@@ -7,14 +7,14 @@ output:
 
 
 ## Loading and preprocessing the data
-First we will set the WD and read in the data and set all NA values to 0
+First we will set the WD and read in the data and remove all NA values
 ```{r, echo= TRUE}
 setwd("~/coursera/RR/RepData_PeerAssessment1")
 data <- read.csv("activity.csv")
 data$date <- as.Date(data$date)
 check <- is.na(data$steps)
 data.NA <- data
-data.NA[check,1] <- 0
+data.NA <- data.NA[!check,]
 ```
 
 
@@ -41,7 +41,11 @@ Now lets look at the average activity for a given interval.  First we will calcu
 IntAvg <- tapply(data.NA$steps, data.NA$interval, mean)
 plot(names(IntAvg), IntAvg, type ="l", xlab = "Interval", ylab = "Average Steps", main = "Average Steps Throughout the Day")
 ```
-
+The interval with the highest average number of steps is:
+```{r,echo=TRUE}
+Val <- max(IntAvg)
+names(IntAvg[match(Val,IntAvg)])
+```
 
 ## Imputing missing values
 The total number of missing values in the dataset
@@ -63,9 +67,10 @@ median(DaySum.comp)
 
 As you can see there is a significant impact on the data when estimated values are used instead of missing values:
 
-- The Mean and Median both increase
-- the number of 0 step days decreases
-- the number of steps per day increases accross the board.
+- The Mean stays the same
+- The median becomes equal to the mean
+- the number of days with the mean number of steps increases significantly
+- This all leads to the conclusion that missing data is not speratic throughout the day, but rather on a day by day basis.
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
